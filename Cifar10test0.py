@@ -57,7 +57,7 @@ model.compile(optimizer='adam',
             # metrics=['accuracy',tf.keras.metrics.SparseCategoricalAccuracy(),tf.keras.metrics.CategoricalAccuracy()])
 
 # history = model.fit(train_images, train_labels, epochs=5, validation_data=(test_images, test_labels))
-history = model.fit(train_images, train_labels, batch_size=40, epochs=6,validation_data=(test_images, test_labels))
+history = model.fit(train_images, train_labels, batch_size=40, epochs=6, validation_data=(test_images, test_labels))
 
 ###########################
 #A History object. Its History.history attribute is a record of training loss values and metrics values at successive epochs,

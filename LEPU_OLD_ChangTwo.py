@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.metrics import classification_report,confusion_matrix
 
-import EcgData
+import LEPU_OLD_EcgDataPipe
 import ImageGen
-import EcgModels
+import LEPU_OLD_EcgModels
 import EcgLossFn
 import EcgConfig
 
@@ -139,46 +139,46 @@ model_path    = os.path.join('models', model_name, run_time)
 result_file = os.path.join('results', model_name, run_time + '_' + lead + '_' + str(timesteps) + '.csv') 
 
 if model_name=='two':
-    model = EcgModels.model_Two(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_Two(filters, timesteps, n_features, classes)
     input_shape=3
 elif model_name=='seq':
-    model = EcgModels.model_Seq(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_Seq(filters, timesteps, n_features, classes)
     input_shape=3
 elif model_name=='seq2':
-    model = EcgModels.model_Seq2Seq(filters,12,12)
+    model = LEPU_OLD_EcgModels.model_Seq2Seq(filters, 12, 12)
     input_shape=3
 elif model_name=='tcp':
-    model = EcgModels.model_TwoCP(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_TwoCP(filters, timesteps, n_features, classes)
     input_shape=3
 elif model_name=='1dlstm_d':
-    model = EcgModels.model_Cnn1DLSTM(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_Cnn1DLSTM(filters, timesteps, n_features, classes)
     input_shape=3
 elif model_name=='lstm':
-    model = EcgModels.model_CnnLSTM(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_CnnLSTM(filters, timesteps, n_features, classes)
     input_shape=3
 elif model_name=='cnnlstm_d':
-    model = EcgModels.model_CnnLSTM_D1(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_CnnLSTM_D1(filters, timesteps, n_features, classes)
     input_shape=4
 elif model_name=='cnnlstm_d_two':
-    model = EcgModels.model_CnnLSTM_D1_Two(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_CnnLSTM_D1_Two(filters, timesteps, n_features, classes)
     input_shape=4
 elif model_name=='cnnlstm_s':
-    model = EcgModels.model_CnnLSTM_S(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_CnnLSTM_S(filters, timesteps, n_features, classes)
     input_shape=4
 elif model_name=='cnnlstm_4':  #4 leads train
-    model = EcgModels.model_CnnLSTM_4(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_CnnLSTM_4(filters, timesteps, n_features, classes)
     input_shape=4
 elif model_name=='ecgseq':
-    model = EcgModels.model_EcgSeq1(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_EcgSeq1(filters, timesteps, n_features, classes)
     input_shape=3
 elif model_name=='ecgatt':
-    model = EcgModels.model_EcgAtt(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_EcgAtt(filters, timesteps, n_features, classes)
     input_shape=3
 elif model_name=='ecgvgg':
-    model = EcgModels.model_VGG16(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_VGG16(filters, timesteps, n_features, classes)
     input_shape=3
 elif model_name=='vggatt':
-    model = EcgModels.model_VGGATT(filters,timesteps,n_features,classes)
+    model = LEPU_OLD_EcgModels.model_VGGATT(filters, timesteps, n_features, classes)
     input_shape=3
 else:
     print('invalid model name:', model_name)
@@ -827,17 +827,17 @@ print('Loading data.....')
 
 if data_path=='simple':
     print('Loading data.....simple')
-    train_ds, total_train_samples = EcgData.load_data(train_data_path, batch_size = batch_size, input_shape=input_shape, subset='train*', train = True)
-    test_ds, total_test_samples = EcgData.load_data(test_data_path, batch_size = batch_size, input_shape=input_shape, subset='test*', train = False)
+    train_ds, total_train_samples = LEPU_OLD_EcgDataPipe.load_data(train_data_path, batch_size = batch_size, input_shape=input_shape, subset='train*', train = True)
+    test_ds, total_test_samples = LEPU_OLD_EcgDataPipe.load_data(test_data_path, batch_size = batch_size, input_shape=input_shape, subset='test*', train = False)
 else:
     if for_train==True:
         #train_ds, total_train_samples = EcgData.load3(train_data_path, batch_size = batch_size,leader=lead ,input_shape=input_shape, train = True)
         #test_ds, total_test_samples = EcgData.load3(test_data_path, batch_size = batch_size,leader=lead ,input_shape=input_shape,train = False)
 
         
-        train_ds,total_train_samples=EcgData.load_train(train_data_path,batch_size,weights=[0.9,0.1])
+        train_ds,total_train_samples=LEPU_OLD_EcgDataPipe.load_train(train_data_path, batch_size, weights=[0.9, 0.1])
         #test_ds,total_test_samples=EcgData.load_train(test_data_path,batch_size,weights=[0.9,0.1])
-        test_ds,total_test_samples=EcgData.load_new(test_data_path,batch_size,timesteps,False, 1)
+        test_ds,total_test_samples=LEPU_OLD_EcgDataPipe.load_new(test_data_path, batch_size, timesteps, False, 1)
 
         
         total_train_steps_per_epoch=int(total_train_samples//batch_size)
@@ -845,7 +845,7 @@ else:
         print('total train, test samples; train_steps/epoch,test_steps/epoch',total_train_samples,total_test_samples,total_train_steps_per_epoch,total_test_steps_per_epoch)
     else:
         test_path='data/mini3/Test/NonPureN'
-        test_ds, total_test_samples = EcgData.load_II(test_data_path,batch_size,False,1)
+        test_ds, total_test_samples = LEPU_OLD_EcgDataPipe.load_II(test_data_path, batch_size, False, 1)
         total_test_steps_per_epoch=int(total_test_samples//batch_size)
 
         print('total test samples',total_test_samples)
