@@ -154,77 +154,77 @@ def process_raw_data(des_file, data_file, label_file, Fs, record_file):
                         writer.write(example)
 
 
-# def process_raw_data(des_file, data_file, label_file, Fs, record_file):
-#     piece_len = 20
-#     file_len = os.path.getsize(des_file)
-#     Num_Wave_frames = file_len // piece_len
-#     print('The total number of wave data in database={}'.format(Num_Wave_frames))
-#
-#     with open(des_file, 'rb') as data_handler:
-#         label_dicts = {}  #:dict be careful
-#         wave_data_dict = {}  #:dict be careful
-#         wave_num_cycle_dict = {}
-#         wave_data_max_len = []
-#         Fs_after = Fs
-#         for i in range(
-#                 Num_Wave_frames):  # total of Num_Wave_frames, each Num_Wave_frames contains different num_of_cycle
-#             # if i > Num_Wave_frames:
-#             if i > 2:
-#                 break
-#             data = data_handler.read(piece_len)
-#             efid, = struct.unpack('<I', data[:4])
-#             seek_pos_wave, = struct.unpack('<I', data[4:8])
-#             piece_len_wave, = struct.unpack('<I', data[8:12])
-#             seek_pos_label, = struct.unpack('<I', data[12:16])
-#             piece_len_label, = struct.unpack('<I', data[16:20])
-#
-#             wave_data = get_data(data_file, seek_pos_wave, piece_len_wave)
-#             framerate, len_label, labels, data_strat_end = view_label(label_file, seek_pos_label, piece_len_label)
-#             wave_data_np = np.asarray(wave_data)
-#
-#             wave_after_resampled = wave_resampled(wave_data, framerate, Fs_after)
-#
-#             # plot_sound_wave(wave_data, framerate)
-#             # plot_sound_wave(wave_data_np, framerate)
-#             # plot_sound_wave(wave_after_resampled, Fs_after)
-#             # print('wave_data={}'.format(len(wave_after_resampled)))
-#             # print('framerate={}'.format(framerate))
-#             # print('framerate_after={}'.format(Fs_after))
-#             # print('len_label={}'.format(len_label))
-#             # print('labels={}'.format(labels))
-#             # print('data_strat_end={}'.format(data_strat_end))
-#
-#             # data_preprocess(efid, wave_data, framerate, labels, data_strat_end, label_pairs, wave_data_pairs)
-#             label_arr = np.asarray(labels).reshape(-1, 2).tolist()  # 将数组或者矩阵转换成列表
-#             label_dicts[efid] = label_arr
-#             data_strat_end_point = np.asarray(data_strat_end).reshape(-1, 2) * Fs_after
-#
-#             data_segs = []
-#             data_segs_len = []
-#             num_of_lungsound_cycle = len(data_strat_end_point)
-#
-#             # print('labels after processed={}'.format(label_dicts))
-#             # print('data_strat_end={}'.format(data_strat_end_point))
-#             # print('num_of_lungsound_cycle={}'.format(num_of_lungsound_cycle))
-#
-#             for i in range(num_of_lungsound_cycle):
-#                 start_point = np.floor(data_strat_end_point[i][0]).astype(np.uint32)
-#                 end_point = np.ceil(data_strat_end_point[i][1]).astype(np.uint32)
-#                 data_seg = np.array(wave_after_resampled[start_point:end_point])
-#
-#                 # print('start_point:', start_point)
-#                 # print('end_point:', end_point)
-#                 # print('Length of data_seg=          {}'.format(len(data_seg)))
-#
-#                 # print('data_seg:', data_seg)
-#                 data_segs.append(data_seg)
-#                 data_segs_len.append(len(data_seg))
-#             wave_data_dict[efid] = data_segs
-#             wave_num_cycle_dict[efid] = num_of_lungsound_cycle
-#             wave_data_max_len.append(np.max(data_segs_len))
-#             # print('wave_data processed={}'.format(wave_data_pairs))
-#             # print('wave_data_max_len={}'.format(wave_data_max_len))
-#     return wave_data_dict, label_dicts, wave_num_cycle_dict, wave_data_max_len
+def process_raw_data(des_file, data_file, label_file, Fs, record_file):
+    piece_len = 20
+    file_len = os.path.getsize(des_file)
+    Num_Wave_frames = file_len // piece_len
+    print('The total number of wave data in database={}'.format(Num_Wave_frames))
+
+    with open(des_file, 'rb') as data_handler:
+        label_dicts = {}  #:dict be careful
+        wave_data_dict = {}  #:dict be careful
+        wave_num_cycle_dict = {}
+        wave_data_max_len = []
+        Fs_after = Fs
+        for i in range(
+                Num_Wave_frames):  # total of Num_Wave_frames, each Num_Wave_frames contains different num_of_cycle
+            # if i > Num_Wave_frames:
+            if i > 2:
+                break
+            data = data_handler.read(piece_len)
+            efid, = struct.unpack('<I', data[:4])
+            seek_pos_wave, = struct.unpack('<I', data[4:8])
+            piece_len_wave, = struct.unpack('<I', data[8:12])
+            seek_pos_label, = struct.unpack('<I', data[12:16])
+            piece_len_label, = struct.unpack('<I', data[16:20])
+
+            wave_data = get_data(data_file, seek_pos_wave, piece_len_wave)
+            framerate, len_label, labels, data_strat_end = view_label(label_file, seek_pos_label, piece_len_label)
+            wave_data_np = np.asarray(wave_data)
+
+            wave_after_resampled = wave_resampled(wave_data, framerate, Fs_after)
+
+            # plot_sound_wave(wave_data, framerate)
+            # plot_sound_wave(wave_data_np, framerate)
+            # plot_sound_wave(wave_after_resampled, Fs_after)
+            # print('wave_data={}'.format(len(wave_after_resampled)))
+            # print('framerate={}'.format(framerate))
+            # print('framerate_after={}'.format(Fs_after))
+            # print('len_label={}'.format(len_label))
+            # print('labels={}'.format(labels))
+            # print('data_strat_end={}'.format(data_strat_end))
+
+            # data_preprocess(efid, wave_data, framerate, labels, data_strat_end, label_pairs, wave_data_pairs)
+            label_arr = np.asarray(labels).reshape(-1, 2).tolist()  # 将数组或者矩阵转换成列表
+            label_dicts[efid] = label_arr
+            data_strat_end_point = np.asarray(data_strat_end).reshape(-1, 2) * Fs_after
+
+            data_segs = []
+            data_segs_len = []
+            num_of_lungsound_cycle = len(data_strat_end_point)
+
+            # print('labels after processed={}'.format(label_dicts))
+            # print('data_strat_end={}'.format(data_strat_end_point))
+            # print('num_of_lungsound_cycle={}'.format(num_of_lungsound_cycle))
+
+            for i in range(num_of_lungsound_cycle):
+                start_point = np.floor(data_strat_end_point[i][0]).astype(np.uint32)
+                end_point = np.ceil(data_strat_end_point[i][1]).astype(np.uint32)
+                data_seg = np.array(wave_after_resampled[start_point:end_point])
+
+                # print('start_point:', start_point)
+                # print('end_point:', end_point)
+                # print('Length of data_seg=          {}'.format(len(data_seg)))
+
+                # print('data_seg:', data_seg)
+                data_segs.append(data_seg)
+                data_segs_len.append(len(data_seg))
+            wave_data_dict[efid] = data_segs
+            wave_num_cycle_dict[efid] = num_of_lungsound_cycle
+            wave_data_max_len.append(np.max(data_segs_len))
+            # print('wave_data processed={}'.format(wave_data_pairs))
+            # print('wave_data_max_len={}'.format(wave_data_max_len))
+    return wave_data_dict, label_dicts, wave_num_cycle_dict, wave_data_max_len
 
 
 def get_data(data_file, seek_pos_wave, piece_len_wave):
@@ -264,22 +264,22 @@ if __name__ == '__main__':
     Fs=10000
     process_raw_data(des_file, data_file, label_file, Fs, record_file)
 #########################
-    # wave_data_dict, label_dicts, wave_num_cycle_dict,wave_data_max_len=process_raw_data(des_file, data_file, label_file, Fs,record_file)
-    # print(wave_data_max_len)
-    # print(wave_num_cycle_dict)
-    # print(label_dicts)
-    # for k, k2, k3 in zip(wave_data_dict,label_dicts,wave_num_cycle_dict):#,您将访问键而不是值
-    #     num = wave_num_cycle_dict[k3]
-    #     print('efid_wave',k)
-    #     print('efid_label', k2)
-    #     print('efid_wave_num_cycle_dict', k3)
-    #     print('wave_num_cycle_dict', wave_num_cycle_dict[k3])
-    #
-    #     for i in range(0,wave_num_cycle_dict[k3]):
-    #         print('wave', wave_data_dict[k][i])
-    #         print('label', label_dicts[k2][i])
-    #         print('wave type', type(wave_data_dict[k][i]))
-    #         print('label type', type(label_dicts[k2][i]))
+    wave_data_dict, label_dicts, wave_num_cycle_dict,wave_data_max_len=process_raw_data(des_file, data_file, label_file, Fs,record_file)
+    print(wave_data_max_len)
+    print(wave_num_cycle_dict)
+    print(label_dicts)
+    for k, k2, k3 in zip(wave_data_dict,label_dicts,wave_num_cycle_dict):#,您将访问键而不是值
+        num = wave_num_cycle_dict[k3]
+        print('efid_wave',k)
+        print('efid_label', k2)
+        print('efid_wave_num_cycle_dict', k3)
+        print('wave_num_cycle_dict', wave_num_cycle_dict[k3])
+
+        for i in range(0,wave_num_cycle_dict[k3]):
+            print('wave', wave_data_dict[k][i])
+            print('label', label_dicts[k2][i])
+            print('wave type', type(wave_data_dict[k][i]))
+            print('label type', type(label_dicts[k2][i]))
 #########################
 
 

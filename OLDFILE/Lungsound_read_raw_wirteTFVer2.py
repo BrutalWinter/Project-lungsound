@@ -334,6 +334,7 @@ def get_data(data_file, seek_pos_wave, piece_len_wave):
         wave_data = struct.unpack('<' + 'f' * len_wave_data, data[8:])
     return wave_data
 
+
 def view_label(label_file, seek_pos_label, piece_len_label):
     with open(label_file, 'rb') as data_handler:
         data_handler.seek(seek_pos_label)
