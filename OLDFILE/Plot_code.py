@@ -36,27 +36,27 @@ import matplotlib.pyplot as plt
 # ax4.plot(x, np.log(x))
 # plt.show()
 ##################
-# x = np.arange(0, 100)
-#
-# fig=plt.figure(figsize=(40,30),facecolor='white',edgecolor='green')
-# '''figure(num=None, figsize=None, dpi=None, facecolor=None, edgecolor=None, frameon=True)
-# num:图像编号或名称，数字为编号 ，字符串为名称
-# figsize:指定figure的宽和高，单位为英寸；
-# dpi参数指定绘图对象的分辨率，即每英寸多少个像素，缺省值为80      1英寸等于2.5cm,A4纸是 21*30cm的纸张
-# facecolor:背景颜色
-# edgecolor:边框颜色
-# frameon:是否显示边框'''
-#
-# ax1=fig.add_subplot(2,2,1)
-# ax1.plot(x, x)
-#
-# ax3=fig.add_subplot(2,2,3)
-# ax3.plot(x, x ** 2)
-# ax3.grid(color='r', linestyle='--', linewidth=1,alpha=0.3)
-#
-# ax4=fig.add_subplot(2,2,4)
-# ax4.plot(x, np.log(x))
-# plt.show()
+x = np.arange(0, 100)
+
+fig=plt.figure(figsize=(40,30),facecolor='white',edgecolor='green')
+'''figure(num=None, figsize=None, dpi=None, facecolor=None, edgecolor=None, frameon=True)
+num:图像编号或名称，数字为编号 ，字符串为名称
+figsize:指定figure的宽和高，单位为英寸；
+dpi参数指定绘图对象的分辨率，即每英寸多少个像素，缺省值为80      1英寸等于2.5cm,A4纸是 21*30cm的纸张
+facecolor:背景颜色
+edgecolor:边框颜色
+frameon:是否显示边框'''
+
+ax1=fig.add_subplot(2,2,1)
+ax1.plot(x, x)
+
+ax3=fig.add_subplot(2,2,3)
+ax3.plot(x, x ** 2)
+ax3.grid(color='r', linestyle='--', linewidth=1,alpha=0.3)
+
+ax4=fig.add_subplot(2,2,4)
+ax4.plot(x, np.log(x))
+plt.show()
 ##########################################################################################
 fig = plt.figure(figsize=(20, 10))
 # 定义数据
