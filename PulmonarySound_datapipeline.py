@@ -1,7 +1,7 @@
 import struct
 import os
 import tensorflow as tf
-from PulmonarySound_FuncBase import Calculating_MFCCs_from_wave, plt_wav_batch, plt_spectrum_batch, plt_MFCC_batch
+from PulmonarySound_FuncBase import Calculating_MFCCs_from_wave, plt_wav_batch, plt_spectrum_from_wave_batchs, plt_MFCC_batch,plt_spectrogram_batch
 ###############################################
 # 读取label数据
 def view_label(label_file):
@@ -84,8 +84,11 @@ def label_all_1_keep(Labels_dataset_parsed,Dataset_parsed): #predicate:	A functi
 
 
 if __name__ == '__main__':
-    data_file = r'/home/brutal/PycharmProjects/Data_base/lung_sound_merge_label20210107/wave_data.DAT'
-    label_file = r'/home/brutal/PycharmProjects/Data_base/lung_sound_merge_label20210107/label.DAT'
+    # data_file = r'/home/brutal/PycharmProjects/Data_base/lung_sound_merge_label20210107/wave_data.DAT'
+    # label_file = r'/home/brutal/PycharmProjects/Data_base/lung_sound_merge_label20210107/label.DAT'
+
+    data_file = r'/home/brutal/PycharmProjects/Data_base/lung_sound_nanfang_selected/data_0.DAT'
+    label_file = r'/home/brutal/PycharmProjects/Data_base/lung_sound_nanfang_selected/label_0.DAT'
 
     ###########  ZN pipeline:
     # wave_list=view_data(data_file)
@@ -101,11 +104,13 @@ if __name__ == '__main__':
     Dataset = tf.data.FixedLengthRecordDataset(filenames=data_file, record_bytes=640004)
     Dataset_parsed = Dataset.map(Parsed_LungSound_data,num_parallel_calls=tf.data.experimental.AUTOTUNE)
     # Ecg_dataset_parsed = Ecg_dataset.map(Parsed_Ecg_data)
-    Label_Data_dataset=tf.data.Dataset.zip((Labels_dataset_parsed,Dataset_parsed)).filter(label_all_0_keep).batch(1)
-    #.shuffle(900)
+    Label_Data_dataset=tf.data.Dataset.zip((Labels_dataset_parsed,Dataset_parsed)).batch(1)
+    # .shuffle(900)
+    # Label_Data_dataset=Label_Data_dataset.filter(label_all_0_keep).batch(1)
+
     ##########################################
     start = 0
-    end = 1000
+    end = 100
 
     for step, data in enumerate(Label_Data_dataset):
         if step > end + 1:
@@ -120,19 +125,18 @@ if __name__ == '__main__':
             print('==>The {:d}th -- its data is {}, shape={}, dtype={}'.format(step, PCM_batch.shape,PCM_batch.shape,PCM_batch.dtype))
             # print('label difference={}'.format(data[0][1]-label_list[step]))
             # print('data difference={}'.format(tf.math.reduce_sum(data[1][1] - wave_list[step])))
+            # plt_wav_batch(PCM_batch, id_batch, Label_batch, sample_rate=8000)
+            # plt_spectrum_from_wave_batchs(PCM_batch, id_batch, Label_batch, sample_rate=8000, FFT_len=1024 * 16, overlap=1024 * 16 - 256 * 16)
 
             ## 呼吸周期大概 2-3s
-            mfccs_batch=Calculating_MFCCs_from_wave(PCM_batch,
-                                    sample_rate=8000, window_frame_len=1024*16, frame_step=256*16, fft_length=1024*16, num_mel_bins=80,num_mel_keepbins=30)
+            spectrograms_batch, mfccs_batch=Calculating_MFCCs_from_wave(PCM_batch,
+                                    sample_rate=8000, window_frame_len=1024*16, frame_step=256*16, fft_length=1024*16*1, num_mel_bins=5, num_mel_keepbins=5)
 
-            # plt_wav_batch(PCM_batch, id_batch, Label_batch, sample_rate=8000)
-            # plt_spectrum_batch(PCM_batch, id_batch, Label_batch, sample_rate=8000, FFT_len=1024*4, overlap=1024*3)
-            plt_MFCC_batch(mfccs_batch, id_batch, Label_batch, time_duration=20)
 
-            save_path=r'/home/brutal/PycharmProjects/Project-lungsound/FIGs'
-            save_name='{}.png'.format(1)
-            save_file_path = os.path.join(save_path, save_name)
-            print(save_file_path)
+            plt_spectrogram_batch(spectrograms_batch, id_batch, Label_batch, time_duration=20, sample_rate=8000)
+            # plt_MFCC_batch(mfccs_batch, id_batch, Label_batch, time_duration=20)
+
+
 
 
 

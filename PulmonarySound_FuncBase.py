@@ -22,8 +22,8 @@ def plt_wav_batch(wave_data, id, Label_batch, sample_rate):
 
 
 
-def plt_spectrum_batch(wave_data, id, Label_batch, sample_rate, FFT_len, overlap):
-    # wave_data: [N, Sample_len]
+def plt_spectrum_from_wave_batchs(wave_data, id, Label_batch, sample_rate, FFT_len, overlap):
+    # wave_data: [N, Sample_len]  it stft pad_end=False
     Num_per_batch = wave_data.shape[0]
     Sample_len = wave_data.shape[1]
     time = Sample_len / sample_rate
@@ -31,14 +31,25 @@ def plt_spectrum_batch(wave_data, id, Label_batch, sample_rate, FFT_len, overlap
     fig = plt.figure(figsize=(18, 8))
     for ith, wave in enumerate(wave_data):
         ax1 = fig.add_subplot(Num_per_batch, 1, ith + 1)
-        spectrum, freqs, ts, im1 = ax1.specgram(wave,NFFT=FFT_len, Fs=sample_rate, noverlap=overlap, window=np.hamming(FFT_len), xextent=(0, time), cmap='inferno')
+        spectrum, freqs, ts, im1 = ax1.specgram(wave,NFFT=FFT_len, Fs=sample_rate, noverlap=overlap, window=np.hamming(FFT_len), xextent=(0, time), cmap='viridis')
 
         ax1.set_title("wav spectrum {} and label={}".format(id[ith],Label_batch[ith]))
         ax1.set_xlabel("Time(s)")
         ax1.set_ylabel("Frequency(Hz)")
         plt.colorbar(im1)
+
+        print('freqs.shape',freqs.shape)
+        print('ts.shape', ts.shape)
     plt.show()
 
+def plot_FilterBanks(Filterbanks):
+    fig = plt.figure(figsize=(16, 8))
+    ax1 = fig.add_subplot(1, 1, 1)
+    x_data = np.arange(0, Filterbanks.shape[0])
+    ax1.plot(x_data, Filterbanks[0:, 0], 'k')
+    # for i in np.arange(0, Filterbanks.shape[-1]):
+    #     ax1.plot(x_data, Filterbanks[0:,i], 'k')
+    plt.show()
 
 
 def plt_MFCC_batch(mfccs_batch, id, Label_batch, time_duration):
@@ -56,7 +67,7 @@ def plt_MFCC_batch(mfccs_batch, id, Label_batch, time_duration):
         # print(mfcc.shape)
         mfcc=tf.transpose(mfcc)
         ax1 = fig.add_subplot(Num_per_batch, 1, ith + 1)
-        im1 = ax1.pcolormesh(time_axis, mfcc_axis, mfcc, shading='auto', cmap='inferno')
+        im1 = ax1.pcolormesh(time_axis, mfcc_axis, mfcc, shading='auto', cmap='viridis')
 
 
         ax1.set_title("MFCCs heatmap {} and label={}".format(id[ith],Label_batch[ith]))
@@ -68,11 +79,40 @@ def plt_MFCC_batch(mfccs_batch, id, Label_batch, time_duration):
         # ax1.yaxis.set_major_locator(miloc_y1)
         # ax1.xaxis.set_major_locator(miloc_x1)
         plt.colorbar(im1)
+    plt.show()
+    # save_path = r'/home/brutal/PycharmProjects/Project-lungsound/FIGs'
+    # save_name = '{}.png'.format(id)
+    # save_file_path = os.path.join(save_path, save_name)
+    # plt.savefig(save_file_path)
+
+def plt_spectrogram_batch(spectrogram_batch, id, Label_batch, time_duration, sample_rate=8000):
+    Num_per_batch = spectrogram_batch.shape[0]
+    Num_frames_per_sample = spectrogram_batch.shape[1]
+    Num_freqs_per_frame = spectrogram_batch.shape[2]
+
+    time_axis=np.linspace(0, time_duration, num=Num_frames_per_sample)
+    freqs_axis=np.linspace(0, sample_rate//2, num=Num_freqs_per_frame)
+
+    fig = plt.figure(figsize=(18, 8))
+    for ith, freqs in enumerate(spectrogram_batch):
+        # Convert to frequencies to log scale and transpose so that the time is represented in the x-axis (columns).
+        freqs = tf.math.log(tf.transpose(freqs))
+        ax1 = fig.add_subplot(Num_per_batch, 1, ith + 1)
+        im1 = ax1.pcolormesh(time_axis, freqs_axis, freqs, shading='gouraud', cmap='viridis')
+
+        ax1.set_title("wav spectrogram {} and label={}".format(id[ith],Label_batch[ith]))
+        ax1.set_xlabel("Time(s)")
+        ax1.set_ylabel("Frequency(Hz)")
+
+        plt.colorbar(im1)
     # plt.show()
     save_path = r'/home/brutal/PycharmProjects/Project-lungsound/FIGs'
     save_name = '{}.png'.format(id)
     save_file_path = os.path.join(save_path, save_name)
     plt.savefig(save_file_path)
+
+
+
 
 
 
@@ -96,10 +136,17 @@ def Pre_Emphasis_data(wave_data_batch,emphasis_coefficent=0.97):
 # 为什么汉明窗这样取呢？因为之后我们会对汉明窗中的数据进行FFT，它假设一个窗内的信号是代表一个周期的信号。 典型的窗口大小是25ms，帧移是10ms (15ms overlap)
 # （也就是说窗的左端和右端应该大致能连在一起）而通常一小段音频数据没有明显的周期性，加上汉明窗后，数据形状就有点周期的感觉了。
 # 因为加上汉明窗，只有中间的数据体现出来了，两边的数据信息丢失了，所以等会移窗的时候，只会移1/3或1/2窗(overlap)，这样被前一帧或二帧丢失的数据又重新得到了体现。
-def Calculating_MFCCs_from_wave(PCM_data_batch, sample_rate, window_frame_len=1024,frame_step=256,fft_length=1024, num_mel_bins = 80, num_mel_keepbins=20):
+def Calculating_MFCCs_from_wave(PCM_data_batch, sample_rate, window_frame_len=1024, frame_step=256,fft_length=1024, num_mel_bins = 80, num_mel_keepbins=20):
     # A Tensor of [batch_size, num_samples] mono PCM samples in the range [-1, 1].
+    ################## if needed:
+    # zero_padding = tf.zeros([8000*20] - tf.shape(waveform), dtype=tf.float32)# Padding for files
+    # # Concatenate audio with padding so that all audio clips will be of the same length
+    # waveform = tf.cast(waveform, tf.float32)
+    # PCM_data_batch = tf.concat([waveform, zero_padding], 0)
+    ##################
+
     stfts = tf.signal.stft(PCM_data_batch,
-                           frame_length=window_frame_len, frame_step=frame_step, fft_length=fft_length, window_fn=tf.signal.hamming_window, pad_end=True)
+                           frame_length=window_frame_len, frame_step=frame_step, fft_length=fft_length, window_fn=tf.signal.hamming_window, pad_end=False)
     spectrograms = tf.math.abs(stfts)  #[N, frames, fft_unique_bins=fft_length//2 + 1]
     # Warp the linear scale spectrograms into the mel-scale:
     num_spectrogram_bins = stfts.shape[-1] # num of frames
@@ -111,6 +158,9 @@ def Calculating_MFCCs_from_wave(PCM_data_batch, sample_rate, window_frame_len=10
     high_freq_mel = 2595 * racf
     linear_to_mel_weight_matrix = tf.signal.linear_to_mel_weight_matrix(num_mel_bins, num_spectrogram_bins,
                                 sample_rate,lower_edge_hertz=low_freq_mel, upper_edge_hertz=high_freq_mel) #A Tensor of shape [num_spectrogram_bins, num_mel_bins].
+    ###########################################
+    # plot_FilterBanks(linear_to_mel_weight_matrix)
+    ###########################################
     # linear_to_mel_weight_matrix=tf.cast(linear_to_mel_weight_matrix,dtype=tf.float32)
     mel_spectrograms = tf.tensordot(spectrograms, linear_to_mel_weight_matrix, 1)
 
@@ -124,14 +174,14 @@ def Calculating_MFCCs_from_wave(PCM_data_batch, sample_rate, window_frame_len=10
 
     print('low_freq_mel',low_freq_mel)
     print('high_freq_mel', high_freq_mel)
-    print('The shape of STFTs={}'.format(spectrograms.shape),spectrograms.dtype)
+    print('The shape of spectrogram (STFTs)={}'.format(spectrograms.shape),spectrograms.dtype)
     print('num_spectrogram_bins=',num_spectrogram_bins)
     print('Mel-filter bank={}'.format(linear_to_mel_weight_matrix.shape), linear_to_mel_weight_matrix.dtype)
     print('The shape of mel_spectrograms={}'.format(mel_spectrograms.shape),mel_spectrograms.dtype)
     print('mel_spectrograms.set_shape', spectrograms.shape[:-1].concatenate(linear_to_mel_weight_matrix.shape[-1:]))
     print('The shape of mfccs={}'.format(mfccs.shape),mfccs.dtype)
     print('\n')
-    return mfccs
+    return spectrograms, mfccs
 
 
 
