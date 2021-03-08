@@ -231,8 +231,8 @@ def process_raw_data(des_file, data_file, label_file, Fs, record_file):
 
 
                     example = serialize_data([efid_index_cycle], data_seg_MFCCs, [label_value])
-                    # example = serialize_data([efid_index_cycle], data_seg, [label_value])
-                    # writer.write(example)
+                    example = serialize_data([efid_index_cycle], data_seg, [label_value])
+                    writer.write(example)
 
 
 
