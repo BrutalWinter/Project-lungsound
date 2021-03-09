@@ -139,7 +139,8 @@ if __name__ == '__main__':
             spectrograms_batch, mfccs_batch=Calculating_MFCCs_from_wave(PCM_batch,
                                     sample_rate=8000, window_frame_len=1024*16, frame_step=256*16, fft_length=1024*16*1, num_mel_bins=5, num_mel_keepbins=5)
 
-
+            print('spectrograms_batch',spectrograms_batch.shape)
+            print('mfccs_batch', mfccs_batch.shape)
             plt_spectrogram_batch(spectrograms_batch, id_batch, Label_batch, time_duration=20, sample_rate=8000)
             # plt_MFCC_batch(mfccs_batch, id_batch, Label_batch, time_duration=20)
 

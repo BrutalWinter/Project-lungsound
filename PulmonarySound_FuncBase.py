@@ -33,7 +33,7 @@ def plt_spectrum_from_wave_batchs(wave_data, id, Label_batch, sample_rate, FFT_l
         ax1 = fig.add_subplot(Num_per_batch, 1, ith + 1)
         spectrum, freqs, ts, im1 = ax1.specgram(wave,NFFT=FFT_len, Fs=sample_rate, noverlap=overlap, window=np.hamming(FFT_len), xextent=(0, time), cmap='viridis')
 
-        ax1.set_title("wav spectrum {} and label={}".format(id[ith],Label_batch[ith]))
+        ax1.set_title("wav spectrum {} and label={} for compare".format(id[ith],Label_batch[ith]))
         ax1.set_xlabel("Time(s)")
         ax1.set_ylabel("Frequency(Hz)")
         plt.colorbar(im1)
@@ -105,11 +105,12 @@ def plt_spectrogram_batch(spectrogram_batch, id, Label_batch, time_duration, sam
         ax1.set_ylabel("Frequency(Hz)")
 
         plt.colorbar(im1)
-    # plt.show()
-    save_path = r'/home/brutal/PycharmProjects/Project-lungsound/FIGs'
-    save_name = '{}.png'.format(id)
-    save_file_path = os.path.join(save_path, save_name)
-    plt.savefig(save_file_path)
+    plt.show()
+
+    # save_path = r'/home/brutal/PycharmProjects/Project-lungsound/FIGs'
+    # save_name = '{}.png'.format(id)
+    # save_file_path = os.path.join(save_path, save_name)
+    # plt.savefig(save_file_path)
 
 
 
