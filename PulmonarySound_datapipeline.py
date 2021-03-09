@@ -45,6 +45,13 @@ def view_data(data_file):
     data_handler.close()
     return  wave_data_list
 
+
+
+
+
+
+
+
 ##########################################
 ##########################################
 def Parsed_LungSound_label(data):

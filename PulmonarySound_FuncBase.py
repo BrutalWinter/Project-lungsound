@@ -198,6 +198,7 @@ def Calculating_MFCCs_from_wave(PCM_data_batch, sample_rate, window_frame_len=10
 ##########################################
 ##########################################
 if __name__ == "__main__":
+    ############################### single:
     path=r'/home/brutal/PycharmProjects/Data_base/dataset-lunsound/ICBHI_final_database/101_1b1_Al_sc_Meditron.wav'
     sample_data, sample_rate = sf.read(path)
     print(sample_data)
@@ -208,11 +209,7 @@ if __name__ == "__main__":
     axes1.plot(sample_data)
     plt.show()
 
-    # audio_binary = tf.io.read_file(path)
-    # audio_data=tf.audio.decode_wav(audio_binary)
-    # print(audio_data)
-
-
+    ################################ alll:
     Audio_Directory = r'/home/brutal/PycharmProjects/Data_base/dataset-lunsound/ICBHI_final_database'
     Audio_files_path = os.path.join(Audio_Directory, '*.wav')
     Audio_files = sorted(tf.io.gfile.glob(Audio_files_path))
@@ -222,7 +219,12 @@ if __name__ == "__main__":
         # print(i)
         sample_datas, sample_rates = sf.read(i)
         print(sample_datas.shape)
-        # print(sample_rates)
+        print(sample_rates)
+
+        fig1 = plt.figure(figsize=(25, 10))
+        axes1 = fig1.add_subplot(1, 1, 1)
+        axes1.plot(sample_datas)
+        plt.show()
 
 
 
