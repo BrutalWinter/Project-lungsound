@@ -46,24 +46,22 @@ class FC_Relu_layers(tf.keras.layers.Layer):
 
 
 class LungSound_Model(tf.keras.Model):
-    def __init__(self, num_classes, num_anchors_set, name="Main_model"):
+    def __init__(self, outputs, kernelsize, name="Main_model"):
         super(LungSound_Model, self).__init__(name=name)
-        self.num_classes = num_classes
-        self.num_anchors = num_anchors_set
 
-        self.layer0 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer1 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer2 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer3 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer4 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer5 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer6 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer7 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer8 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer9 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer10 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer11 =Conv2D_loopbody(32, 5, strides=(1,1))
-        self.layer12 =Conv2D_loopbody(32, 5, strides=(1,1))
+        self.layer0 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer1 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer2 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer3 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer4 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer5 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer6 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer7 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer8 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer9 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer10 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer11 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
+        self.layer12 =Conv2D_loopbody(outputs, kernelsize, strides=(1,1))
 
         self.Fc_Relu0 =FC_Relu_layers(num_filters=1024)
         self.Fc_Relu1 =FC_Relu_layers(num_filters=512)
@@ -100,6 +98,19 @@ class LungSound_Model(tf.keras.Model):
         return x
 
 
+
+if __name__ == '__main__':
+    LungSound_model= LungSound_Model(32,5)
+    ##############################################################
+    data_set=tf.random.uniform(shape=[10,224,140], minval=0, maxval=10, dtype=tf.int32)
+    batch_size = 2
+    data_set = data_set.batch(batch_size)
+
+
+    for epoch in tf.range(10, 20):
+        for step, data in enumerate(data_set):
+            PCM_batch= data
+            print(PCM_batch)
 
 
 

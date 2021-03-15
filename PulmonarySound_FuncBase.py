@@ -137,7 +137,8 @@ def Pre_Emphasis_data(wave_data_batch,emphasis_coefficent=0.97):
 # 为什么汉明窗这样取呢？因为之后我们会对汉明窗中的数据进行FFT，它假设一个窗内的信号是代表一个周期的信号。 典型的窗口大小是25ms，帧移是10ms (15ms overlap)
 # （也就是说窗的左端和右端应该大致能连在一起）而通常一小段音频数据没有明显的周期性，加上汉明窗后，数据形状就有点周期的感觉了。
 # 因为加上汉明窗，只有中间的数据体现出来了，两边的数据信息丢失了，所以等会移窗的时候，只会移1/3或1/2窗(overlap)，这样被前一帧或二帧丢失的数据又重新得到了体现。
-def Calculating_MFCCs_from_wave(PCM_data_batch, sample_rate, window_frame_len=1024, frame_step=256,fft_length=1024, num_mel_bins = 80, num_mel_keepbins=20):
+def Calculating_MFCCs_from_wave(PCM_data_batch, sample_rate,
+                                window_frame_len=1024, frame_step=256,fft_length=1024, num_mel_bins = 80, num_mel_keepbins=20):
     # A Tensor of [batch_size, num_samples] mono PCM samples in the range [-1, 1].
     ################## if needed:
     # zero_padding = tf.zeros([8000*20] - tf.shape(waveform), dtype=tf.float32)# Padding for files

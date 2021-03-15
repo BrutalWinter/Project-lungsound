@@ -111,7 +111,7 @@ if __name__ == '__main__':
     Dataset = tf.data.FixedLengthRecordDataset(filenames=data_file, record_bytes=640004)
     Dataset_parsed = Dataset.map(Parsed_LungSound_data,num_parallel_calls=tf.data.experimental.AUTOTUNE)
     # Ecg_dataset_parsed = Ecg_dataset.map(Parsed_Ecg_data)
-    Label_Data_dataset=tf.data.Dataset.zip((Labels_dataset_parsed,Dataset_parsed)).batch(1)
+    Label_Data_dataset=tf.data.Dataset.zip((Labels_dataset_parsed,Dataset_parsed)).batch(3)
     # .shuffle(900)
     # Label_Data_dataset=Label_Data_dataset.filter(label_all_0_keep).batch(1)
 
